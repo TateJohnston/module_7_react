@@ -10,7 +10,9 @@ const LabThree = () => {
 
   return (
     <Box>
-      <Typography>Lab Three</Typography>
+      <Typography variant="h4" sx={{ margin: "20px" }}>
+        Lab Three Content
+      </Typography>
       <Typography variant="h4">{emoji}</Typography>
 
       <Select

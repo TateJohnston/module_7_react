@@ -22,7 +22,7 @@ const currencies = [
   { name: "EUR", symbol: "€" },
   { name: "SGD", symbol: "$" },
 ];
-const LabOne = () => {
+const LabOne = ({ labNumber = "One" }) => {
   const [searchParams] = useSearchParams();
   const optionalCur = searchParams.get("currency");
   const [currency, setCurrency] = useState(
@@ -84,7 +84,7 @@ const LabOne = () => {
     <>
       <Box>
         <Typography sx={{ marginTop: "20px" }} variant="h4">
-          Lab One Content
+          Lab {labNumber} Content
         </Typography>
         <Typography sx={{ padding: "20px" }}>Choose currency:</Typography>
         <Box>

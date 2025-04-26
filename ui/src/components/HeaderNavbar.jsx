@@ -13,8 +13,36 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useUserContext } from "../stores/userStore";
+import { NavLink } from "react-router-dom";
+import { useEffect } from "react";
 
-const pages = ["Homepage", "Page Two", "Page Three", "Page Four"];
+const currencies = [
+  { name: "USD", symbol: "$" },
+  { name: "AUD", symbol: "$" },
+  { name: "NZD", symbol: "$" },
+  { name: "GBP", symbol: "£" },
+  { name: "EUR", symbol: "€" },
+  { name: "SGD", symbol: "$" },
+];
+
+const randomCurrency =
+  currencies[Math.floor(Math.random() * currencies.length)].name;
+
+const pages = [
+  {
+    page: "Lab-One",
+    url: `http://localhost:5173/lab-one/?currency=${randomCurrency}`,
+  },
+  {
+    page: "Lab-Two",
+    url: `http://localhost:5173/lab-two/?currency=${randomCurrency}`,
+  },
+  {
+    page: "Lab-Three",
+    url: "http://localhost:5173/lab-three/",
+  },
+  { page: "Lab-Five", url: "http://localhost:5173/lab-five/" },
+];
 
 function HeaderNavbar() {
   const { currentUser } = useUserContext();
@@ -22,6 +50,7 @@ function HeaderNavbar() {
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+    console.log(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -79,8 +108,14 @@ function HeaderNavbar() {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem key={page.page} onClick={handleCloseNavMenu}>
+                  <Typography
+                    sx={{ textAlign: "center", color: "Black" }}
+                    component={NavLink}
+                    to={page.url}
+                  >
+                    {page.page}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -98,7 +133,7 @@ function HeaderNavbar() {
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color: "white",
               textDecoration: "none",
             }}
           >
@@ -106,13 +141,9 @@ function HeaderNavbar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+              <NavLink key={page.page} to={page.url}>
+                {page.page}
+              </NavLink>
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
