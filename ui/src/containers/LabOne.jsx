@@ -7,10 +7,12 @@ import {
   FormControl,
   Select,
   TextField,
+  Skeleton,
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "../stores/useQuery";
 
 const currencies = [
   { name: "USD", symbol: "$" },
@@ -22,26 +24,39 @@ const currencies = [
 ];
 const LabOne = () => {
   const [searchParams] = useSearchParams();
-  const optionalCur = searchParams.get("currency").toUpperCase();
+  const optionalCur = searchParams.get("currency");
   const [currency, setCurrency] = useState(
     optionalCur ? optionalCur : currencies[0].name
   );
+
+  const [data, isLoading] = useQuery(
+    `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`
+  );
+
   const [currencySymbol, setCurrencySymbol] = useState(currencies[0].symbol);
   const [bitcoinConversionTotal, setBitcoinConversionTotal] = useState();
   const [bitcoinAmount, setBitcoinAmount] = useState(1);
 
   useEffect(() => {
-    axios
-      .get(
-        `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`
-      )
-      .then((response) => {
-        const data = response.data.bitcoin[currency.toLowerCase()];
+    const getCurrencyFromQueryData = (data, key) => {
+      if (data && key) {
+        setBitcoinConversionTotal(data.bitcoin[key]);
+      }
+    };
+    getCurrencyFromQueryData(data, currency.toLowerCase());
+    console.log("data", data);
+  }, [data]);
 
-        setBitcoinConversionTotal(data);
-      })
-      .catch((error) => console.log(error, "error"));
-  }, [currency]);
+  //   useEffect((`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`) => {
+  //     axios
+  //       .get()
+  //       .then((response) => {
+  //         const data = response.data.bitcoin[currency.toLowerCase()];
+
+  //         setBitcoinConversionTotal(data);
+  //       })
+  //       .catch((error) => console.log(error, "error"));
+  //   }, [currency]);
 
   const handleCurrencySelection = (e) => {
     let matchedItem = currencies.find((curr) => curr.name === e.target.value);
@@ -51,7 +66,8 @@ const LabOne = () => {
     }
   };
 
-  const convertAmount = (amount) => {
+  const convertAmount = (amount, bitcoinValue) => {
+    console.log("amount", amount, bitcoinConversionTotal);
     setBitcoinConversionTotal(bitcoinConversionTotal * amount);
     setBitcoinAmount(amount);
   };
@@ -76,7 +92,10 @@ const LabOne = () => {
             label="Amount"
             type="number"
             variant="outlined"
-            onChange={(e) => convertAmount(e.target.value)}
+            onChange={(e) => {
+              console.log("e", e.target.value);
+              convertAmount(e.target.value);
+            }}
           />
           <FormControl sx={{ m: 1 }}>
             <InputLabel id="currency-rates-label"> Currency</InputLabel>
@@ -92,11 +111,20 @@ const LabOne = () => {
           </FormControl>
         </Box>
         <Box>
-          <Typography>
+          {isLoading ? (
+            <Skeleton variant="rectangular"></Skeleton>
+          ) : (
+            <Typography>
+              {bitcoinAmount} Bitcoin = {currencySymbol}
+              {bitcoinConversionTotal?.toLocaleString()} {currency}
+              {/* make it a function here */}
+            </Typography>
+          )}
+          {/* <Typography>
             {bitcoinAmount} Bitcoin = {currencySymbol}
             {bitcoinConversionTotal?.toLocaleString()}
             {/* make it a function here */}
-          </Typography>
+          {/* </Typography> */}
         </Box>
       </Box>
     </>
