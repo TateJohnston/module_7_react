@@ -6,6 +6,7 @@ import { ActivityFinder } from "./components/ActivityFinder";
 import AppRoutes from "./AppRoutes";
 import HeaderNavbar from "./components/HeaderNavbar";
 import { UserProvider } from "./stores/userStore";
+import { DataProvider } from "./stores/dataStore";
 
 function App() {
   // VARIABLES/STATE
@@ -15,17 +16,19 @@ function App() {
   // RETURN OF OUR VISUAL STUFF
   return (
     <>
-      <UserProvider username={"Guest"}>
-        <HeaderNavbar />
-        <Container
-          sx={{
-            display: "flex",
-            height: "90vh",
-          }}
-        >
-          <AppRoutes />
-        </Container>
-      </UserProvider>
+      <DataProvider>
+        <UserProvider username={"Guest"}>
+          <HeaderNavbar />
+          <Container
+            sx={{
+              display: "flex",
+              height: "90vh",
+            }}
+          >
+            <AppRoutes />
+          </Container>
+        </UserProvider>
+      </DataProvider>
     </>
   );
 }

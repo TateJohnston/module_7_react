@@ -36,11 +36,14 @@ const LabOne = () => {
   const [currencySymbol, setCurrencySymbol] = useState(currencies[0].symbol);
   const [bitcoinConversionTotal, setBitcoinConversionTotal] = useState();
   const [bitcoinAmount, setBitcoinAmount] = useState(1);
+  const [bitcoinPrice, setBitcoinPrice] = useState();
 
   useEffect(() => {
     const getCurrencyFromQueryData = (data, key) => {
       if (data && key) {
-        setBitcoinConversionTotal(data.bitcoin[key]);
+        const price = data.bitcoin[key];
+        setBitcoinPrice(price);
+        setBitcoinConversionTotal(price * bitcoinAmount);
       }
     };
     getCurrencyFromQueryData(data, currency.toLowerCase());
@@ -67,9 +70,9 @@ const LabOne = () => {
   };
 
   const convertAmount = (amount, bitcoinValue) => {
-    console.log("amount", amount, bitcoinConversionTotal);
-    setBitcoinConversionTotal(bitcoinConversionTotal * amount);
+    console.log("amount", amount, bitcoinPrice);
     setBitcoinAmount(amount);
+    setBitcoinConversionTotal(bitcoinPrice * amount);
   };
 
   const currencyOptions = currencies.map((curr) => (
